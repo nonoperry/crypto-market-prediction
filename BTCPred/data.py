@@ -1,0 +1,32 @@
+import pandas as pd
+import numpy as np
+def get_data_csv():
+    data = pd.read_csv(
+        '../raw_data/FTX_BTCUSD_1h.csv', header=1)
+    print('data retrieved')
+    return data
+
+
+def clean_data(data):
+    data = data.iloc[::-1]
+    print('data cleaned')
+    return data
+
+def sequencing(data):
+    SEQUENCE_SIZE = 11
+    values = data['close']
+    res = np.zeros(shape=(values.shape[0] - SEQUENCE_SIZE, SEQUENCE_SIZE))
+    for i in range(values.shape[0] - SEQUENCE_SIZE):
+        seq = values[i:i+SEQUENCE_SIZE]
+        res[i,:] = seq
+    X = res[:,:-1]
+    y = res[:,-1]
+    print('data sequenced')
+    return X,y
+
+
+if __name__ == '__main__':
+    #data = get_data_csv()
+    #data = clean_data()
+    #data = sequencing()
+    pass
