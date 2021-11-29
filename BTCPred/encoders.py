@@ -10,11 +10,8 @@ def scaler(X,y):
     y_scaled=scaler_y.fit_transform(y.reshape(-1,1))
     X_scaled=X_scaled.reshape(-1,1,10)
     y_scaled=y_scaled.reshape(-1,1)
-    return X_scaled, y_scaled
+    return X_scaled, y_scaled, scaler_x, scaler_y
 
 def split(X_scaled,y_scaled):
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_scaled, test_size=0.2)
     return X_train, X_test, y_train, y_test
-
-
-
