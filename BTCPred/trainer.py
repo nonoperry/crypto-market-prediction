@@ -6,7 +6,6 @@ from keras.callbacks import EarlyStopping
 from keras import optimizers
 from BTCPred.data import get_data_csv, clean_data, sequencing
 from BTCPred.encoders import scaler, split
-from BTCPred.trainer import Model
 import pandas as pd
 import seaborn as sns
 
