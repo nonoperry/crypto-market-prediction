@@ -1,14 +1,11 @@
-from enum import auto
 import streamlit as st
 import datetime
 import pandas as pd
-import numpy as np
 import json
 import websocket
 from BTCPred.trainer import Model
-from BTCPred.data import get_data_csv, clean_data, sequencing
+from BTCPred.data import sequencing
 from BTCPred.encoders import scaler, split
-from sklearn.preprocessing import MinMaxScaler
 import binance
 from PIL import Image
 
