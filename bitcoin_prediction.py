@@ -5,6 +5,10 @@ import pandas as pd
 import numpy as np
 import json
 import websocket
+from BTCPred.trainer import Model
+from BTCPred.data import get_data_csv, clean_data, sequencing
+from BTCPred.encoders import scaler, split
+from sklearn.preprocessing import MinMaxScaler
 import binance
 from PIL import Image
 
@@ -32,15 +36,15 @@ interval = st.selectbox('What interval do you want to trade in?',
 
 socket = f'wss://stream.binance.com:9443/ws/{cc2}@kline_{interval}'
 
-start_date = st.date_input("Start Date?", datetime.date(2021, 11, 26))
+start_date = st.date_input("Start Date?", datetime.date(2021, 11, 30))
 start_str = str(start_date.day) + ' ' + str(datetime.date(1900, start_date.month, 1).strftime('%b')) + ', ' + str(start_date.year)
 
-end_date = st.date_input("End Date?", datetime.date(2021, 11, 27))
+end_date = st.date_input("End Date?", datetime.date(2021, 12, 1))
 end_str = str(end_date.day) + ' ' + str(datetime.date(1900, end_date.month, 1).strftime('%b')) + ', ' + str(end_date.year)
 
 result = client.get_historical_klines(cc, interval, start_str=start_str, end_str=end_str)
 if st.button('Make me a prediction cryptobro'):
-    
+
     st.write('here is you prediction babe')
 
 
@@ -67,6 +71,22 @@ df.rename(columns={0: 'Open Time',
 df.drop(df.tail(1).index,inplace=True)
 df
 
+X, y, X_test = sequencing(df)
+
+X_scaled, y_scaled, scaler_x, scaler_y = scaler(X, y)
+
+X_train, X_test, y_train, y_test = split(X_scaled, y_scaled)
+
+test = Model(X_train, y_train, scaler_y, scaler_x, X_scaled)
+
+model = test.lstm_model()
+
+es = test.early_stop()
+
+test.fit()
+
+st.write(test.graphing(y))
+
 def on_close(ws):
     st.markdown("""All trades settled.""")
 
@@ -90,8 +110,17 @@ def on_message(ws, message):
         df = df.append(new_row, ignore_index=True)
         df.loc[len(df) - 1, 'Open Time'] = pd.to_datetime(df.loc[len(df) - 1, 'Open Time'], unit='ms')
         df.loc[len(df) - 1, 'Close Time'] = pd.to_datetime(df.loc[len(df) - 1, 'Close Time'], unit='ms')
+        df['Close'] = df['Close'].astype(float)
         st.write(f"""Closes: {cs['c']}""")
         st.write(df)
+        X_test = X_test = df['Close'].values[-10:]
+        X_test = X_test.reshape(1, -1)
+        X_test_scaled = scaler_x.transform(X_test)
+        X_test_scaled = X_test_scaled.reshape(-1, 1, 10)
+        st.write("Last prices :", X_test)
+        prediction = test.model.predict(X_test_scaled.reshape((1, 1, 10)))
+        prediction = prediction.reshape((1, 1))
+        st.write("Prediction :", test.scaler_y.inverse_transform(prediction))
 
 
 st.sidebar.header('Available Tokens 💰 :')
@@ -104,7 +133,6 @@ st.sidebar.image(image, width=75, caption='Binance Coin')
 st.sidebar.header('Sources 📖 :')
 url = 'https://www.binance.com/fr/support/faq/360002502072'
 st.sidebar.markdown("check out this [link](%s)" % url)
-
 
 ws = websocket.WebSocketApp(socket, on_message=on_message, on_close=on_close)
 

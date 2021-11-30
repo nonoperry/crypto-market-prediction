@@ -58,7 +58,7 @@ pypi:
 #         HEROKU COMMANDS
 # ----------------------------------
 
-streamlit:
+run_streamlit:
 	-@streamlit run bitcoin_prediction.py
 
 heroku_login:
