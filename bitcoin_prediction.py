@@ -23,6 +23,16 @@ with st.expander("Useful links"):
     url3 = 'https://coinmarketcap.com/'
     st.markdown("[CoinMarketCap: Crypto data agreggator](%s)" % url3)
 
+st.sidebar.header('Available Tokens 💰 :')
+image = Image.open('raw_data/BTClogo.png')
+st.sidebar.image(image, width=75, caption='Bitcoin')
+image = Image.open('raw_data/ETHlogo.png')
+st.sidebar.image(image, width=75, caption='Ethereum')
+image = Image.open('raw_data/BNBlogo.png')
+st.sidebar.image(image, width=75, caption='Binance Coin')
+st.sidebar.header('Sources 📖 :')
+url = 'https://www.binance.com/fr/support/faq/360002502072'
+st.sidebar.markdown("check out this [link](%s)" % url)
 
 client = binance.Client()
 
@@ -121,18 +131,6 @@ def on_message(ws, message):
         prediction = test.model.predict(X_test_scaled.reshape((1, 1, 10)))
         prediction = prediction.reshape((1, 1))
         st.write("Prediction :", test.scaler_y.inverse_transform(prediction))
-
-
-st.sidebar.header('Available Tokens 💰 :')
-image = Image.open('/Users/noam/code/nonoperry/data-challenges/BTClogo.png')
-st.sidebar.image(image, width=75, caption='Bitcoin')
-image = Image.open('/Users/noam/code/nonoperry/data-challenges/ETHlogo.png')
-st.sidebar.image(image, width=75, caption='Ethereum')
-image = Image.open('/Users/noam/code/nonoperry/data-challenges/BNBlogo.png')
-st.sidebar.image(image, width=75, caption='Binance Coin')
-st.sidebar.header('Sources 📖 :')
-url = 'https://www.binance.com/fr/support/faq/360002502072'
-st.sidebar.markdown("check out this [link](%s)" % url)
 
 ws = websocket.WebSocketApp(socket, on_message=on_message, on_close=on_close)
 
