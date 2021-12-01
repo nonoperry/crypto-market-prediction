@@ -8,6 +8,8 @@ from BTCPred.data import get_data_csv, clean_data, sequencing
 from BTCPred.encoders import scaler, split
 import pandas as pd
 import seaborn as sns
+import streamlit as st
+
 
 class Model(object):
     def __init__(self, X_train, y_train, scaler_y, scaler_x, X_scaled):
@@ -24,7 +26,6 @@ class Model(object):
         model.add(LSTM(units=256, activation='relu', return_sequences=True))
         model.add(Dropout(0.2))
         model.add(Dense(units=1, activation='linear'))
-        model.summary()
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),loss='mean_squared_error',metrics=['mse'])
         self.model = model
 
@@ -33,7 +34,7 @@ class Model(object):
         self.es = es
 
     def fit(self):
-        history = self.model.fit(self.X_train, self.y_train, validation_split=0.1, batch_size=32 , epochs=100,shuffle=True,callbacks=self.es)
+        history = self.model.fit(self.X_train, self.y_train, validation_split=0.1, batch_size=32 , epochs=100, shuffle=True,callbacks=self.es)
         self.history = history
 
     def graphing(self, y):

@@ -9,7 +9,6 @@ def get_data_csv():
 
 def clean_data(data):
     data = data.iloc[::-1]
-    print('data cleaned')
     return data
 
 def sequencing(data):
@@ -22,7 +21,6 @@ def sequencing(data):
     X = res[:,:-1]
     y = res[:,-1]
     X_test = res[-1, 1:]
-    print('data sequenced')
     return X, y, X_test
 
 if __name__ == '__main__':
