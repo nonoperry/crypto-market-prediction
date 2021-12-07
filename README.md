@@ -1,8 +1,8 @@
 # Data analysis
 - Document here the project: bitcoin-market-prediction
-- Description: Project Description
-- Data Source:
-- Type of analysis:
+- Description: Crypto price predictions (BTC, BNB, ETH)
+- Data Source: Binance API
+- Type of analysis: Recurrent Neural Network(RNN) - Long short-term Memory(LSTM)
 
 Please document the project the better you can.
 
